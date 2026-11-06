@@ -249,6 +249,12 @@ def run(config: Config):
         multiprocessing_context=config.data.multiprocessing_context,
     )
 
+    # Optional local evidence only; no change to optimization or logging defaults.
+    if os.environ.get("KUNLITA_TRAIN_METRICS"):
+        from gr00t.experiment.kunlita_metrics import KunlitaMetricsCallback
+
+        trainer.add_callback(KunlitaMetricsCallback(os.environ["KUNLITA_TRAIN_METRICS"]))
+
     trainer.add_callback(
         CheckpointFormatCallback(
             run_name=experiment_name,
